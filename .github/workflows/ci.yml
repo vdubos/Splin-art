@@ -11,19 +11,20 @@ jobs:
     - uses: pre-commit/action@v3.0.1
 
   tests:
-        runs-on: ${{ matrix.os }}
-        strategy:
-            matrix:
-                os:
-                    - ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    needs: pre-commit
+    strategy:
+        matrix:
+            os:
+                - ubuntu-latest
 #                     - macos-latest
-                    # - windows-latest
-        steps:
-            - uses: actions/checkout@v3
+                # - windows-latest
+    steps:
+        - uses: actions/checkout@v3
 
-            - uses: prefix-dev/setup-pixi@v0.8.1
-              with:
-                  pixi-version: v0.40.2
-                  cache: true
+        - uses: prefix-dev/setup-pixi@v0.8.1
+          with:
+                pixi-version: v0.40.2
+                cache: true
 
-            - run: pixi run test
+        - run: pixi run test
