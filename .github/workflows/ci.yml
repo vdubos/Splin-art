@@ -13,3 +13,18 @@ jobs:
             cache: true
       - run: pixi run test
 
+  python_tests:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        # py-version:
+        #   - "3.10"
+        #   - 3.11
+        #   - 3.12
+    # steps:
+    #   - name: Set up Python ${{ matrix.py-version }}
+    #     uses: actions/setup-python@v2
+    #     with:
+    #       python-version: ${{ matrix.py-version }}
+
