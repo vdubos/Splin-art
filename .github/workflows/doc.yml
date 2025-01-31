@@ -1,11 +1,24 @@
 name: "Run Documentation"
 
-on: pull_request
+# Allow one concurrent deployment
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+on:
+  pull_request:
+    branches:
+      main
+  push:
+    branches:
+      main
+  workflow_dispatch:
 
 jobs:
   # Build job
   build:
     # Specify runner +  build & upload the static files as an artifact
+    if: github.repository == 'vdubos/Splin-art'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -26,6 +39,7 @@ jobs:
 
   # Deployment job
   deploy:
+    if: github.repository == 'vdubos/Splin-art' && github.ref == 'refs/heads/main'
     # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
     permissions:
         contents: read
