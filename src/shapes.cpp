@@ -23,4 +23,4 @@ namespace
         xt::view(path, xt::all(), 0) = center[0] + radius * xt::cos(theta);
         xt::view(path, xt::all(), 1) = center[1] + radius * xt::sin(theta);
     }
-} // namespace splinart
+}

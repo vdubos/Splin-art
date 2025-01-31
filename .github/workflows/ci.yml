@@ -1,52 +1,62 @@
 name: "Run CI"
 
 on:
-  pull_request:
-      paths-ignore:
-          - "doc/**"
+    pull_request:
+        paths-ignore:
+            - "doc/**"
 
 jobs:
-  pre-commit:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-python@v3
-    - uses: pre-commit/action@v3.0.1
+    pre-commit:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - uses: actions/setup-python@v3
+            - uses: pre-commit/action@v3.0.0
 
-  cppcheck:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
+    cppcheck:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
 
-      - uses: prefix-dev/setup-pixi@v0.8.1
-        with:
-              pixi-version: v0.40.2
-              cache: true
+            - uses: prefix-dev/setup-pixi@v0.8.1
+              with:
+                  pixi-version: v0.40.2
+                  cache: true
 
-      - name: install cppcheck
-        run: pixi add cppcheck
+            - name: cppcheck installation
+              run: pixi add cppcheck
 
-      - name: configure
-        shell: pixi run bash {0}
-        run: |
-          cmake -S . -B .build -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_BUILD_TYPE=Debug -DBUILD_EXAMPLES=ON
-          cppcheck --enable=missingInclude,unusedFunction,warning,style,portability,performance -q --project=.build/compile_commands.json --suppressions-list=.cppcheck 2> cppcheck_err.txt
+            - name: Configure
+              run: |
+                  cmake -S . -B .build -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_BUILD_TYPE=Debug -DBUILD_EXAMPLES=ON
+                  cppcheck --enable=missingInclude,unusedFunction,warning,style,portability,performance -q --project=.build/compile_commands.json --suppressions-list=.cppcheck 2> cppcheck_err.txt
+              shell: pixi run bash {0}
 
-  tests:
-    runs-on: ${{ matrix.os }}
-    needs: [pre-commit, cppcheck]
-    strategy:
-        matrix:
-            os:
-                - ubuntu-latest
-#                     - macos-latest
-                # - windows-latest
-    steps:
-        - uses: actions/checkout@v3
+            - name: Check for errors
+              run: |
+                  if [[ -s cppcheck_err.txt ]];
+                  then
+                    cat cppcheck_err.txt
+                    exit -1
+                  fi
 
-        - uses: prefix-dev/setup-pixi@v0.8.1
-          with:
-                pixi-version: v0.40.2
-                cache: true
+    tests:
+        runs-on: ${{ matrix.os }}
+        needs: [pre-commit, cppcheck]
+        strategy:
+            fail-fast: false
+            matrix:
+                os:
+                    - ubuntu-latest
+                    - macos-latest
+                    - windows-latest
+        steps:
+            - uses: actions/checkout@v3
 
-        - run: pixi run test
+            - uses: prefix-dev/setup-pixi@v0.8.1
+              with:
+                  pixi-version: v0.40.2
+                  cache: true
+
+            - name: Run tests
+              run: pixi run test

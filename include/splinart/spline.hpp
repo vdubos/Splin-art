@@ -24,10 +24,9 @@ namespace splinart
     ///
     inline auto spline(const xt::xtensor<double, 1>& xs, const xt::xtensor<double, 2>& ys)
     {
-        auto n      = xs.shape()[0];
-        auto u_i    = xt::zeros_like(ys);
-        auto y2s    = xt::zeros_like(ys);
-        auto unused = 4;
+        auto n   = xs.shape()[0];
+        auto u_i = xt::zeros_like(ys);
+        auto y2s = xt::zeros_like(ys);
 
         auto dif = xt::eval(xt::diff(xs));
         auto sig = xt::eval(xt::view(dif, xt::range(_, dif.size() - 1)) / (xt::view(xs, xt::range(2, _)) - xt::view(xs, xt::range(_, n - 2))));
@@ -60,7 +59,7 @@ namespace splinart
     ///
     /// @param y The output coordinates of the sample.
     ///
-    inline void SplinT(const xt::xtensor<double, 1>& xs,
+    inline void splint(const xt::xtensor<double, 1>& xs,
                        const xt::xtensor<double, 2>& ys,
                        const xt::xtensor<double, 2>& y2s,
                        xt::xtensor<double, 1>& x,
@@ -68,8 +67,8 @@ namespace splinart
     {
         for (std::size_t i = 0; i < x.size(); ++i)
         {
-            auto upper = std::upper_bound(xs.cbegin(), xs.cend(), x[i]);
-            auto khi   = upper != xs.end() ? std::distance(xs.begin(), upper) : xs.size();
+            const auto* upper = std::upper_bound(xs.cbegin(), xs.cend(), x[i]);
+            auto khi          = upper != xs.end() ? std::distance(xs.begin(), upper) : xs.size();
             if (khi >= xs.size())
             {
                 khi = xs.size() - 1;
@@ -84,4 +83,4 @@ namespace splinart
                                     * std::pow(step, 2) / 6);
         }
     }
-} // namespace splinart
+}
