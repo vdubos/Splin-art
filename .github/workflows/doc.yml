@@ -3,7 +3,20 @@ name: "Run Documentation"
 on: pull_request
 
 jobs:
-  doc:
+#   doc:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v3
+#       - uses: prefix-dev/setup-pixi@v0.8.1
+#         with:
+#               pixi-version: v0.40.2
+#               cache: true
+#       - name: html
+#         run: pixi run doc
+
+  # Build job
+  build:
+    # Specify runner +  build & upload the static files as an artifact
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -11,20 +24,11 @@ jobs:
         with:
               pixi-version: v0.40.2
               cache: true
-      - name: html
-        run: pixi run doc
-
-  # Build job
-  build:
-    # Specify runner +  build & upload the static files as an artifact
-    runs-on: ubuntu-latest
-    steps:
       - name: Build static files
         id: build
         run: |
-          # <Not provided for brevity>
-          # At a minimum this step should build the static files of your site
-          # <Not provided for brevity>
+              run: pixi run doc
+
 
       - name: Upload static files as artifact
         id: deployment
