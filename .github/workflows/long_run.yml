@@ -1,6 +1,7 @@
 name: long_run
 
 on:
+    pull_request:
     workflow_dispatch:
     schedule:
         - cron: '0 0 * * *'
