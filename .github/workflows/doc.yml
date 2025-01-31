@@ -17,7 +17,7 @@ concurrency:
 jobs:
     build:
         # Don't run on forks
-        if: github.repository == 'gouarin/splinart-cpp'
+        if: github.repository == 'vdubos/Splin-art'
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
@@ -38,7 +38,7 @@ jobs:
     deploy:
         runs-on: ubuntu-latest
         needs: build
-        if: github.repository == 'gouarin/splinart-cpp' && github.ref == 'refs/heads/main'
+        if: github.repository == 'vdubos/Splin-art' && github.ref == 'refs/heads/main'
         permissions:
             contents: read
             pages: write
