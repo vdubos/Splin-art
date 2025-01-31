@@ -26,8 +26,7 @@ jobs:
               cache: true
       - name: Build static files
         id: build
-        run: |
-              run: pixi run doc
+        run: pixi run doc
 
 
       - name: Upload static files as artifact
