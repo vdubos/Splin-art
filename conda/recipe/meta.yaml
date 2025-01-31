@@ -1,0 +1,40 @@
+{% set version = environ.get('VERSION', '') %}
+# {% set version = '0.0.1' %}
+
+package:
+  name: splin-art
+  version: {{ version }}
+
+source:
+  git_url: https://github.com/vdubos/Splin-art.git
+  git_rev: v{{ version }}
+
+build:
+  number: 0
+
+requirements:
+  build:
+    - {{ compiler('cxx') }}
+    - cmake
+    - ninja
+  host:
+    - xtensor
+    - opencv
+    - cli11
+  run:
+    - libopencv
+
+test:
+  commands:
+    - test -f ${PREFIX}/bin/Splin-art # [unix]
+    - if not exist %LIBRARY_PREFIX%\bin\Splin-art.exe (exit 1) # [win]
+
+about:
+  home: http://github.com/vdubos/Splin-art
+  license: BSD
+  license_family: BSD
+  summary: "spline art generator"
+  description: "spline art generator"
+
+extra:
+  recipe-maintainers: "virgile.dubos@proton.me"
